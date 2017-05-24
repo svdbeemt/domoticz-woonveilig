@@ -1,5 +1,4 @@
-# domoticz-woonveilig
-Domoticz Woonveilig alarmsystem Plugin
+# Domoticz Woonveilig alarmsystem Plugin
 
 This plugin will connect your Woonveilig Gate01 alarmsystem to Domoticz. This plugin was designed for using Domoticz as an addition on controlling the Woonveilig alarmsystem. No modifications to your Woonveilig configuration will be made.
 
@@ -9,12 +8,12 @@ The following Woonveilig accessories are supported:
 
 Currently IR sensors are not supported.
 
-#Features
+##Features
 After installing the plugin you will be able to:
 * Change the state of your alarm (arm, disarm, arm home)
 * Door contact swtiches will be added. You can monitor when a door is open/closed and use this information for event based ruling.
 
-#Installation and setup
+##Installation and setup
 
 If you are use a Raspberry Pi to host your Domoticz, you probably need to install libpython3.4 for plugins to work.
 
