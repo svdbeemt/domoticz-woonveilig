@@ -2,7 +2,7 @@
 
 This plugin will connect your Woonveilig Gate01 alarmsystem to Domoticz. This plugin was designed for using Domoticz as an addition on controlling the Woonveilig alarmsystem. No modifications to your Woonveilig configuration will be made.
 
-The following Woonveilig accessories are supported:
+The following Woonveilig accessories are supported and will automatically be installed as devices in Domoticz: 
 * Door contacts
 * Keypad
 
