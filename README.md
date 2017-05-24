@@ -46,7 +46,7 @@ Make sure you enter all the required fields.
 ## Using the domoticz built-in security panel 
 If you want to control the Woonvelig alarmsystem by using the built-in Domoticz Security panel you can achieve this by adding the following Event (LUA script):
 
-Replace the values for variables 'woonveiligKeypadDeviceName' and 'domoticzSecurityPanelName' with your own devicenames.
+Replace the values for variables `woonveiligKeypadDeviceName` and `domoticzSecurityPanelName` with your own devicenames.
 
 ```
 commandArray = {}
