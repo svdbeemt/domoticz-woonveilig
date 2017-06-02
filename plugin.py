@@ -57,10 +57,10 @@ class BasePlugin:
     def onStop(self):
         Domoticz.Log("onStop called")
 
-    def onConnect(self, Status, Description):
+    def onConnect(self, Status, Connection, Description):
         Domoticz.Log("onConnect called")
 
-    def onMessage(self, Data, Status, Extra):
+    def onMessage(self, Connection, Data, Status, Extra):
         Domoticz.Log("onMessage called")
 
     def onCommand(self, Unit, Command, Level, Hue):
@@ -97,7 +97,7 @@ class BasePlugin:
     def onNotification(self, Name, Subject, Text, Status, Priority, Sound, ImageFile):
         Domoticz.Log("Notification: " + Name + "," + Subject + "," + Text + "," + Status + "," + str(Priority) + "," + Sound + "," + ImageFile)
 
-    def onDisconnect(self):
+    def onDisconnect(self, Connection):
         Domoticz.Log("onDisconnect called")
 
     def onHeartbeat(self):
@@ -135,13 +135,13 @@ def onStop():
     global _plugin
     _plugin.onStop()
 
-def onConnect(Status, Description):
+def onConnect(Status, Connection, Description):
     global _plugin
-    _plugin.onConnect(Status, Description)
+    _plugin.onConnect(Status, Connection, Description)
 
-def onMessage(Data, Status, Extra):
+def onMessage(Data, Connection, Status, Extra):
     global _plugin
-    _plugin.onMessage(Data, Status, Extra)
+    _plugin.onMessage(Data, Connection, Status, Extra)
 
 def onCommand(Unit, Command, Level, Hue):
     global _plugin
@@ -151,9 +151,9 @@ def onNotification(Name, Subject, Text, Status, Priority, Sound, ImageFile):
     global _plugin
     _plugin.onNotification(Name, Subject, Text, Status, Priority, Sound, ImageFile)
 
-def onDisconnect():
+def onDisconnect(Connection):
     global _plugin
-    _plugin.onDisconnect()
+    _plugin.onDisconnect(Connection)
 
 def onHeartbeat():
     global _plugin
