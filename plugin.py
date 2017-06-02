@@ -57,7 +57,7 @@ class BasePlugin:
     def onStop(self):
         Domoticz.Log("onStop called")
 
-    def onConnect(self, Status, Connection, Description):
+    def onConnect(self, Connection, Status, Description):
         Domoticz.Log("onConnect called")
 
     def onMessage(self, Connection, Data, Status, Extra):
