@@ -2,7 +2,7 @@
 # Author: Steven van den Beemt
 #
 """
-<plugin key="Woonveilig" name="Woonveilig Gate01" author="Steven van den Beemt" version="1.0.0" wikilink="" externallink="https://www.woonveilig.nl">
+<plugin key="Woonveilig" name="Woonveilig Gate01" author="Steven van den Beemt" version="1.1.0" wikilink="" externallink="https://www.woonveilig.nl">
     <params>
         <param field="Address" label="IP Address" width="200px" required="true" default=""/>
         <param field="Username" label="Username" width="150px" required="true" default=""/>
@@ -31,40 +31,43 @@ class BasePlugin:
         return
 
     def onStart(self):
-        Domoticz.Log("onStart called")       
+        Domoticz.Debug("onStart called")       
         if (Parameters["Mode6"] == "Debug"):
             Domoticz.Debugging(1)
 
-        if (len(Devices) == 0):
+        url = "http://%s/action/sensorListGet" % Parameters["Address"]    
+        response = MakeRequest(url)
+        Domoticz.Debug(response)
+        data = ParseJson(response)
 
-            url = "http://%s/action/sensorListGet" % Parameters["Address"]    
-            response = MakeRequest(url)
-            Domoticz.Log(response)
-            data = ParseJson(response);
+        #Add new devices
+        for sensor in data["senrows"]:
+            if (int(sensor["no"]) not in Devices):
 
-            for sensor in data["senrows"]:
                 if (sensor["type"] == "Door Contact"): 
                     Domoticz.Device(Name=sensor["name"], TypeName="Switch", Switchtype=11, Unit=int(sensor["no"])).Create()
-                if (sensor["type"] == "Remote Keypad"):
+                if (sensor["type"] == "Remote Keypad" and 99 not in Devices):
                     Options = {"LevelActions": "||","LevelNames": "Off|Home|On","LevelOffHidden": "false","SelectorStyle": "1"}
                     Domoticz.Device(Name=sensor["name"], Unit=99, TypeName="Selector Switch", Switchtype=18, Image=13, Options=Options).Create()
+                if (sensor["type"] == "IR Sensor"): 
+                    Domoticz.Device(Name=sensor["name"], TypeName="Switch", Switchtype=8, Unit=int(sensor["no"])).Create()
 
-            Domoticz.Log("Devices created.")
+        Domoticz.Log("Devices initialized.")
 
         DumpConfigToLog()
 
 
     def onStop(self):
-        Domoticz.Log("onStop called")
+        Domoticz.Debug("onStop called")
 
     def onConnect(self, Connection, Status, Description):
-        Domoticz.Log("onConnect called")
+        Domoticz.Debug("onConnect called")
 
     def onMessage(self, Connection, Data, Status, Extra):
-        Domoticz.Log("onMessage called")
+        Domoticz.Debug("onMessage called")
 
     def onCommand(self, Unit, Command, Level, Hue):
-        Domoticz.Log("onCommand called for Unit " + str(Unit) + ": Parameter '" + str(Command) + "', Level: " + str(Level))
+        Domoticz.Debug("onCommand called for Unit " + str(Unit) + ": Parameter '" + str(Command) + "', Level: " + str(Level))
 
         Command = Command.strip()
         action, sep, params = Command.partition(' ')
@@ -91,31 +94,33 @@ class BasePlugin:
             response = MakeRequest(url,"POST",data)
             nValue = GetAlarmLevel(status) #convert to level: 0,10,20
             UpdateDevice(Unit=99, nValue = nValue, sValue= str(nValue))
-            #Domoticz.Log(response)
+            Domoticz.Debug(response)
 
 
     def onNotification(self, Name, Subject, Text, Status, Priority, Sound, ImageFile):
-        Domoticz.Log("Notification: " + Name + "," + Subject + "," + Text + "," + Status + "," + str(Priority) + "," + Sound + "," + ImageFile)
+        Domoticz.Debug("Notification: " + Name + "," + Subject + "," + Text + "," + Status + "," + str(Priority) + "," + Sound + "," + ImageFile)
 
     def onDisconnect(self, Connection):
-        Domoticz.Log("onDisconnect called")
+        Domoticz.Debug("onDisconnect called")
 
     def onHeartbeat(self):
-        Domoticz.Log("onHeartbeat called")
+        Domoticz.Debug("onHeartbeat called")
 
         #1. Update status of Door contacts
         url = "http://%s/action/sensorListGet" % Parameters["Address"]    
         response = MakeRequest(url)
-        #Domoticz.Log(response)
+        Domoticz.Debug(response)
         data = ParseJson(response)
         for sensor in data["senrows"]:
                 if (sensor["type"] == "Door Contact"): 
                     UpdateDevice(int(sensor["no"]), nValue = 1 if sensor["cond"] == "Open" else 0, sValue = "True" if sensor["cond"] == "Open" else "False")
+                if (sensor["type"] == "IR Sensor"): 
+                    UpdateDevice(int(sensor["no"]), nValue = 1 if sensor["cond"] != "" else 0, sValue = "True" if sensor["cond"] != "" else "False")
 
         #2. Update status of alarm/remote keypad
         url = "http://%s/action/panelCondGet" % Parameters["Address"]
         response = MakeRequest(url)
-        #Domoticz.Log(response)
+        Domoticz.Debug(response)
         data = ParseJson(response)
         status = GetAlarmStatus(data["updates"]["mode_a1"]) #convert to enum status
         nValue = GetAlarmLevel(status) #convert to level: 0, 10, 20
