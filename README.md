@@ -5,13 +5,17 @@ This plugin will connect your Woonveilig Gate01 alarmsystem to Domoticz. This pl
 The following Woonveilig accessories are supported and will automatically be installed as devices in Domoticz: 
 * Door contacts
 * Keypad
-
-Currently IR sensors are not supported.
+* IR sensors
 
 ## Features
 After installing the plugin you will be able to:
 * Change the state of your alarm (arm, disarm, arm home)
-* Door contact swtiches will be added. You can monitor when a door is open/closed and use this information for event based ruling.
+* Door contact switches will be added. You can monitor when a door is open/closed and use this information for event based ruling.
+* IR sensor devices will be added
+
+## Version history
+* V1.0 - Supporting alarmpanel and doorcontacts
+* V1.1 - Support for IR sensors
 
 ## Installation and setup
 
