@@ -29,7 +29,8 @@ At the moment of writing you also need to install:
 sudo apt install python3-dev
 sudo apt install python3-pip
 sudo apt-get install python3-urllib3
-sudo pip install demjson
+sudo apt-get install pip3
+sudo pip3 install demjson
 ```
 In your domoticz/plugins directory do:
 ```
