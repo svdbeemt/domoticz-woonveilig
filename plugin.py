@@ -185,14 +185,23 @@ def ParseJson(crapyy_json):
     data = demjson.decode(crapyy_json) 
     return data;
 
-def MakeRequest(url, method="GET", data={}):
-    credentials = base64.b64encode("{0}:{1}".format(Parameters["Username"], Parameters["Password"]).encode()).decode("ascii")
-    headers = {'Authorization': "Basic " + credentials}
-    data = urllib.parse.urlencode(data).encode()
-    request = RESTRequest(url=url, headers=headers, data=data, method=method)
-    connection = urllib.request.urlopen(request)
-    response = connection.read().decode('utf-8')
-    return response
+def MakeRequest(url, method="GET", data={}): 
+    tries = 3
+    for i in range(tries):
+        try:
+            credentials = base64.b64encode("{0}:{1}".format(Parameters["Username"], Parameters["Password"]).encode()).decode("ascii")
+            headers = {'Authorization': "Basic " + credentials}
+            data = urllib.parse.urlencode(data).encode()
+            request = RESTRequest(url=url, headers=headers, data=data, method=method)
+            connection = urllib.request.urlopen(request)
+            response = connection.read().decode('utf-8')
+            return response
+        except KeyError as e:
+            if i < tries - 1: # starts @ zero
+                continue
+            else:
+                raise
+        break
 
 def UpdateDevice(Unit, nValue, sValue):
 # Make sure that the Domoticz device still exists (they can be deleted) before updating it 
